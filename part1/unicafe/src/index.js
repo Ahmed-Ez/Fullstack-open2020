@@ -2,24 +2,32 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const Statistic = ({ text, value }) => (
-  <p>
-    {text}: {value}
-  </p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 );
 
 const Statistics = ({ good, bad, neutral }) => {
   if (good + bad + neutral === 0) return <p>No Feedback given</p>;
   return (
     <div>
-      <Statistic text="Good" value={good} />
-      <Statistic text="Bad" value={bad} />
-      <Statistic text="Neutral" value={neutral} />
-      <Statistic text="All" value={good + bad + neutral} />
-      <Statistic text="Average" value={(good - bad) / (good + bad + neutral)} />
-      <Statistic
-        text="Positive"
-        value={(good / (good + bad + neutral)) * 100}
-      />
+      <table>
+        <tbody>
+          <Statistic text="Good" value={good} />
+          <Statistic text="Bad" value={bad} />
+          <Statistic text="Neutral" value={neutral} />
+          <Statistic text="All" value={good + bad + neutral} />
+          <Statistic
+            text="Average"
+            value={(good - bad) / (good + bad + neutral)}
+          />
+          <Statistic
+            text="Positive"
+            value={(good / (good + bad + neutral)) * 100}
+          />
+        </tbody>
+      </table>
     </div>
   );
 };
