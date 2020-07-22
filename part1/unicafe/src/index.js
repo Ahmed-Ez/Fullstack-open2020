@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const Statistics = ({ good, bad, neutral }) => {
+  if (good + bad + neutral === 0) return <p>No Feedback given</p>;
   return (
     <div>
+      <p>Good: {good}</p>
+      <p>Bad: {bad}</p>
+      <p>Neutral: {neutral}</p>
       <p>All: {good + bad + neutral}</p>
       <p>Average: {(good - bad) / (good + bad + neutral)}</p>
       <p>Positive: {(good / (good + bad + neutral)) * 100}</p>
@@ -34,9 +38,6 @@ const App = () => {
       <button onClick={incBad}>Bad</button>
       <button onClick={incNeutral}>Neutral</button>
       <h1>Statistics</h1>
-      <p>Good: {good}</p>
-      <p>Bad: {bad}</p>
-      <p>Neutral: {neutral}</p>
       <Statistics good={good} bad={bad} neutral={neutral} />
     </div>
   );
