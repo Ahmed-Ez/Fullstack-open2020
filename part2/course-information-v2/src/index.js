@@ -28,11 +28,15 @@ const Content = ({ parts }) => {
   );
 };
 
-const Total = (props) => {
-  const [part1, part2, part3] = props.parts;
+const Total = ({ parts }) => {
   return (
     <div>
-      <p>Total: {part1.exercises + part2.exercises + part3.exercises}</p>
+      <p>
+        Total:
+        {parts.reduce((s, p) => {
+          return s + p.exercises;
+        }, 0)}
+      </p>
     </div>
   );
 };
@@ -71,6 +75,11 @@ const App = () => {
         name: 'Another part',
         exercises: 15,
         id: 4,
+      },
+      {
+        name: 'Yet another part',
+        exercises: 10,
+        id: 5,
       },
     ],
   };
