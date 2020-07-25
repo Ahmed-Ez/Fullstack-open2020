@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import contactServices from './services/contacts';
 import Form from './components/Form';
 import People from './components/People';
 import Search from './components/Search';
@@ -11,10 +11,19 @@ const App = () => {
   const [filteredList, setFilteredList] = useState(null);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((res) => setPersons(res.data));
+    contactServices.getAll().then((persons) => setPersons(persons));
   }, []);
+
+  const deleteHandler = (e) => {
+    const targetName = persons.find((person) => person.id == e.target.value);
+    if (window.confirm(`Delete ${targetName.name} ?`)) {
+      contactServices.deletePerson(e.target.value);
+      setPersons(persons.filter((person) => person.id != e.target.value));
+      setFilteredList(
+        filteredList.filter((person) => person.id != e.target.value)
+      );
+    }
+  };
 
   const inputHandler = (e) => {
     if (e.target.name === 'NewName') setNewName(e.target.value);
@@ -22,11 +31,14 @@ const App = () => {
   };
 
   const filterHandler = (e) => {
-    setFilteredList(
-      persons.filter((person) =>
-        person.name.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-    );
+    if (e.target.value === '') setFilteredList(null);
+    else {
+      setFilteredList(
+        persons.filter((person) =>
+          person.name.toLowerCase().includes(e.target.value.toLowerCase())
+        )
+      );
+    }
   };
 
   const formHandler = (e) => {
@@ -34,8 +46,34 @@ const App = () => {
     setNewName('');
     setNewPhone('');
     const exists = persons.find((person) => person.name === newName);
-    if (exists) alert(`${newName} Already Exists !`);
-    else setPersons(persons.concat({ name: newName, phone: newPhone }));
+    if (exists) {
+      if (
+        window.confirm(`${newName} already exists in the phonebook would u like to 
+      replace the old number with new one ?`)
+      ) {
+        contactServices
+          .updatePerson(exists.id, {
+            name: newName,
+            phone: newPhone,
+          })
+          .then((newPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === newPerson.id ? newPerson : person
+              )
+            );
+            setFilteredList(
+              filteredList.map((person) =>
+                person.id === newPerson.id ? newPerson : person
+              )
+            );
+          });
+      }
+    } else {
+      contactServices
+        .addPerson({ name: newName, phone: newPhone })
+        .then((person) => setPersons(persons.concat([person])));
+    }
   };
 
   return (
@@ -48,7 +86,10 @@ const App = () => {
         name={newName}
         phone={newPhone}
       />
-      <People persons={filteredList ? filteredList : persons} />
+      <People
+        persons={filteredList ? filteredList : persons}
+        deleteHandler={deleteHandler}
+      />
     </div>
   );
 };
