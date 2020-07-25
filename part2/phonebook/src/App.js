@@ -3,12 +3,15 @@ import contactServices from './services/contacts';
 import Form from './components/Form';
 import People from './components/People';
 import Search from './components/Search';
+import Message from './components/Message';
+import './index.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [filteredList, setFilteredList] = useState(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     contactServices.getAll().then((persons) => setPersons(persons));
@@ -17,11 +20,30 @@ const App = () => {
   const deleteHandler = (e) => {
     const targetName = persons.find((person) => person.id == e.target.value);
     if (window.confirm(`Delete ${targetName.name} ?`)) {
-      contactServices.deletePerson(e.target.value);
+      contactServices
+        .deletePerson(e.target.value)
+        .then(() => {})
+        .catch((error) => {
+          setMessage({
+            text: `${targetName.name} has already been deleted`,
+            type: 'error',
+          });
+          setTimeout(() => {
+            setMessage('');
+          }, 3000);
+        });
       setPersons(persons.filter((person) => person.id != e.target.value));
-      setFilteredList(
-        filteredList.filter((person) => person.id != e.target.value)
-      );
+      if (filteredList)
+        setFilteredList(
+          filteredList.filter((person) => person.id != e.target.value)
+        );
+      setMessage({
+        text: `${targetName.name} deleted successfully`,
+        type: 'success',
+      });
+      setTimeout(() => {
+        setMessage('');
+      }, 3000);
     }
   };
 
@@ -62,23 +84,48 @@ const App = () => {
                 person.id === newPerson.id ? newPerson : person
               )
             );
-            setFilteredList(
-              filteredList.map((person) =>
-                person.id === newPerson.id ? newPerson : person
-              )
-            );
+            if (filteredList)
+              setFilteredList(
+                filteredList.map((person) =>
+                  person.id === newPerson.id ? newPerson : person
+                )
+              );
+            setMessage({
+              text: `${newName} phone Changed successfully`,
+              type: 'success',
+            });
+            setTimeout(() => {
+              setMessage('');
+            }, 3000);
+          })
+          .catch((error) => {
+            setMessage({
+              text: `${newName} has already been deleted`,
+              type: 'error',
+            });
+            setTimeout(() => {
+              setMessage('');
+            }, 3000);
           });
       }
     } else {
       contactServices
         .addPerson({ name: newName, phone: newPhone })
         .then((person) => setPersons(persons.concat([person])));
+      setMessage({
+        text: `${newName} added successfully`,
+        type: 'success',
+      });
+      setTimeout(() => {
+        setMessage('');
+      }, 3000);
     }
   };
 
   return (
     <div>
       <h1>Phonebook</h1>
+      <Message message={message} />
       <Search filterHandler={filterHandler} />
       <Form
         formHandler={formHandler}

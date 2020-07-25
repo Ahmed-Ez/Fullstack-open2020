@@ -5,9 +5,29 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 20px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+h1 {
+  color: rebeccapurple;
+}
+
+.message {
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 25px;
+  background-color: rgb(240, 240, 240);
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: rgb(24, 224, 24);
 }
