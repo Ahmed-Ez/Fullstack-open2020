@@ -15,7 +15,7 @@ const App = () => {
 
   useEffect(() => {
     contactServices.getAll().then((persons) => setPersons(persons));
-  }, []);
+  }, [message]);
 
   const deleteHandler = (e) => {
     const targetName = persons.find((person) => person.id == e.target.value);
@@ -111,7 +111,9 @@ const App = () => {
     } else {
       contactServices
         .addPerson({ name: newName, phone: newPhone })
-        .then((person) => setPersons(persons.concat([person])));
+        .then((person) =>
+          setPersons(persons.concat({ name: newName, phone: newPhone }))
+        );
       setMessage({
         text: `${newName} added successfully`,
         type: 'success',
