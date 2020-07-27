@@ -18,7 +18,7 @@ const App = () => {
   }, [message]);
 
   const deleteHandler = (e) => {
-    const targetName = persons.find((person) => person.id == e.target.value);
+    const targetName = persons.find((person) => person.id === e.target.value);
     if (window.confirm(`Delete ${targetName.name} ?`)) {
       contactServices
         .deletePerson(e.target.value)
@@ -32,10 +32,10 @@ const App = () => {
             setMessage('');
           }, 3000);
         });
-      setPersons(persons.filter((person) => person.id != e.target.value));
+      setPersons(persons.filter((person) => person.id !== e.target.value));
       if (filteredList)
         setFilteredList(
-          filteredList.filter((person) => person.id != e.target.value)
+          filteredList.filter((person) => person.id !== e.target.value)
         );
       setMessage({
         text: `${targetName.name} deleted successfully`,
@@ -111,16 +111,26 @@ const App = () => {
     } else {
       contactServices
         .addPerson({ name: newName, phone: newPhone })
-        .then((person) =>
-          setPersons(persons.concat({ name: newName, phone: newPhone }))
-        );
-      setMessage({
-        text: `${newName} added successfully`,
-        type: 'success',
-      });
-      setTimeout(() => {
-        setMessage('');
-      }, 3000);
+        .then((person) => {
+          setPersons(persons.concat({ name: newName, phone: newPhone }));
+          setMessage({
+            text: `${newName} added successfully`,
+            type: 'success',
+          });
+          setTimeout(() => {
+            setMessage('');
+          }, 3000);
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          setMessage({
+            text: `${error.response.data.error}`,
+            type: 'error',
+          });
+          setTimeout(() => {
+            setMessage('');
+          }, 3000);
+        });
     }
   };
 
