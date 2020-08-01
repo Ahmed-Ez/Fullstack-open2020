@@ -1,4 +1,5 @@
 const Blog = require('../models/Blog');
+const User = require('../models/User');
 
 const initialBlogs = [
   {
@@ -8,6 +9,7 @@ const initialBlogs = [
     url: 'https://reactpatterns.com/',
     likes: 7,
     __v: 0,
+    user: '5f2442de56c424263cad48f7',
   },
   {
     _id: '5a422aa71b54a676234d17f8',
@@ -17,6 +19,7 @@ const initialBlogs = [
       'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
     __v: 0,
+    user: '5f2442de56c424263cad48f7',
   },
   {
     _id: '5a422b3a1b54a676234d17f9',
@@ -59,7 +62,13 @@ const blogsInDb = async () => {
   return blogs;
 };
 
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users;
+};
+
 module.exports = {
   initialBlogs,
   blogsInDb,
+  usersInDb,
 };
