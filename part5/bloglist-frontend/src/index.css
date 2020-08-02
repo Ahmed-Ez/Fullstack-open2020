@@ -1,0 +1,17 @@
+body {
+  padding: 10px;
+}
+.message {
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 25px;
+  background-color: rgb(240, 240, 240);
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: rgb(24, 224, 24);
+}
