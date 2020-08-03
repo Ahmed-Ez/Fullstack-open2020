@@ -1,11 +1,17 @@
-import React from 'react';
-
-const BlogForm = ({ blog, setBlog, blogFormSubmit }) => {
+import React, { useState } from 'react';
+import propTypes from 'prop-types';
+const BlogForm = ({ submitBlog }) => {
+  const [blog, setBlog] = useState({ title: '', author: '', url: '' });
   const { title, author, url } = blog;
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    submitBlog(blog);
+  };
   return (
     <div>
       <h2>Add new Blog</h2>
-      <form onSubmit={blogFormSubmit}>
+      <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="title">title</label>
           <input
@@ -45,4 +51,7 @@ const BlogForm = ({ blog, setBlog, blogFormSubmit }) => {
   );
 };
 
+BlogForm.propTypes = {
+  submitBlog: propTypes.func.isRequired,
+};
 export default BlogForm;
