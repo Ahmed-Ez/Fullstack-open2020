@@ -29,16 +29,16 @@ blogRouter.post('/', async (req, res, next) => {
 });
 
 blogRouter.delete('/:id', async (req, res, next) => {
-  const token = await jwt.verify(req.token, config.SECRET);
-  if (!token || !token.id)
-    return res.status(401).json({ error: 'invalid token' });
+  // const token = await jwt.verify(req.token, config.SECRET);
+  // if (!token || !token.id)
+  //   return res.status(401).json({ error: 'invalid token' });
   const blog = await Blog.findById(req.params.id);
   if (!blog) return res.status(400).json({ erorr: 'no blog found' });
-  if (!(blog.user.toString() === token.id))
-    return res.status(401).json({ error: 'not authorized' });
-  const user = await User.findById(token.id);
-  user.blogs = user.blogs.filter((b) => blog.id !== b._id.toString());
-  await user.save();
+  // if (!(blog.user.toString() === token.id))
+  //   return res.status(401).json({ error: 'not authorized' });
+  // const user = await User.findById(token.id);
+  // user.blogs = user.blogs.filter((b) => blog.id !== b._id.toString());
+  // await user.save();
   await blog.delete();
 
   return res.status(204).json({ message: 'deleted blog' });

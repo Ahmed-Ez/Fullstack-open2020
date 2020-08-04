@@ -7,10 +7,10 @@ const Blog = ({ blog, likesHandler, deleteHandler }) => {
     <div>
       {visible ? (
         <div className="blog">
-          <p>Title: {blog.title}</p>
-          <p>Author: {blog.author}</p>
-          <p>Url: {blog.url}</p>
-          <p>
+          <p className="title">Title: {blog.title}</p>
+          <p className="author">Author: {blog.author}</p>
+          <p className="url">Url: {blog.url}</p>
+          <p className="likes">
             Likes:
             {blog.likes}
             <button
