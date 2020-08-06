@@ -11,10 +11,17 @@ const reducer = (state = null, action) => {
   }
 };
 
+let timeOutId;
+
 export const addNotification = (notification, timeOut) => {
   return async (dispatch) => {
+    console.log(timeOutId);
+    clearTimeout(timeOutId);
     dispatch({ type: 'ADD_NOTIFICATION', data: notification });
-    setTimeout(() => dispatch({ type: 'CLEAR_NOTIFICATION' }), timeOut * 1000);
+    timeOutId = setTimeout(
+      () => dispatch({ type: 'CLEAR_NOTIFICATION' }),
+      timeOut * 1000
+    );
   };
 };
 

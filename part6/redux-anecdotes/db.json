@@ -42,12 +42,12 @@
     },
     {
       "content": "testing if text input gets reset",
-      "votes": 2,
+      "votes": 3,
       "id": "OiJnjkx"
     },
     {
       "content": "testing after adding thunk",
-      "votes": 13,
+      "votes": 19,
       "id": "wpvr3-z"
     },
     {
@@ -59,6 +59,21 @@
       "content": "Exercise 6.18",
       "votes": 2,
       "id": "gm_0oxH"
+    },
+    {
+      "content": "connect is annoying",
+      "votes": 56,
+      "id": "oupdpT1"
+    },
+    {
+      "content": "PART 6 COMPLETE",
+      "votes": 65,
+      "id": "DeUT8ig"
+    },
+    {
+      "content": "pre commit ",
+      "votes": 1,
+      "id": "t1W47rq"
     }
   ]
 }
