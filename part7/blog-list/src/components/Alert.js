@@ -1,9 +1,10 @@
 import React from 'react';
+import { Alert as BootAlert } from 'react-bootstrap';
 
 const Alert = ({ alert }) => {
   return (
     <div>
-      <p className={`${alert.type} message`}> {alert.text}</p>
+      <BootAlert variant={alert.type}>{alert.text}</BootAlert>
     </div>
   );
 };

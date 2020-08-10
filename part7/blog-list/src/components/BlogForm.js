@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { addBlog } from '../reducers/blogsReducer';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { Form, Button } from 'react-bootstrap';
 const BlogForm = () => {
   const [blog, setBlog] = useState({ title: '', author: '', url: '' });
   const { title, author, url } = blog;
   const dispatch = useDispatch();
+  const history = useHistory();
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(addBlog(blog));
     setBlog({ title: '', author: '', url: '' });
+    history.push('/');
   };
   return (
     <div>
-      <h2>Add new Blog</h2>
-      <form onSubmit={onSubmit}>
-        <div>
-          <label htmlFor="title">title</label>
-          <input
+      <h3>Add new Blog</h3>
+      <Form onSubmit={onSubmit}>
+        <Form.Group controlId="formBasicTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
             type="text"
             name="title"
             value={title}
@@ -24,10 +28,10 @@ const BlogForm = () => {
               setBlog({ ...blog, [e.target.name]: e.target.value })
             }
           />
-        </div>
-        <div>
-          <label htmlFor="author">author</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formBasicAuthor">
+          <Form.Label>Author</Form.Label>
+          <Form.Control
             type="text"
             name="author"
             value={author}
@@ -35,10 +39,10 @@ const BlogForm = () => {
               setBlog({ ...blog, [e.target.name]: e.target.value })
             }
           />
-        </div>
-        <div>
-          <label htmlFor="url">url</label>
-          <input
+        </Form.Group>
+        <Form.Group controlId="formBasicUrl">
+          <Form.Label>Url</Form.Label>
+          <Form.Control
             type="text"
             name="url"
             value={url}
@@ -46,9 +50,11 @@ const BlogForm = () => {
               setBlog({ ...blog, [e.target.name]: e.target.value })
             }
           />
-        </div>
-        <button>submit</button>
-      </form>
+        </Form.Group>
+        <Button type="submit" variant="primary">
+          Submit
+        </Button>
+      </Form>
     </div>
   );
 };

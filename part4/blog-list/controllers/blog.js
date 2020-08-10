@@ -33,7 +33,7 @@ blogRouter.delete('/:id', async (req, res, next) => {
   // if (!token || !token.id)
   //   return res.status(401).json({ error: 'invalid token' });
   const blog = await Blog.findById(req.params.id);
-  if (!blog) return res.status(400).json({ erorr: 'no blog found' });
+  if (!blog) return res.status(404).json({ erorr: 'no blog found' });
   // if (!(blog.user.toString() === token.id))
   //   return res.status(401).json({ error: 'not authorized' });
   // const user = await User.findById(token.id);
@@ -49,6 +49,14 @@ blogRouter.put('/:id', async (req, res, next) => {
     likes: req.body.likes,
   });
   return res.status(200).json(newBlog);
+});
+
+blogRouter.post('/:id/comments', async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+  if (!blog) return res.status(404).json({ error: 'No blog found' });
+  blog.comments = blog.comments.concat(req.body.comment);
+  await blog.save();
+  return res.status(200).json({ comment: req.body.comment });
 });
 
 module.exports = blogRouter;

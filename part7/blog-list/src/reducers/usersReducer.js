@@ -38,7 +38,7 @@ export const login = (user, password) => {
       dispatch(setAlert({ text: 'Logged in successfully !', type: 'success' }));
     } catch (error) {
       dispatch(
-        setAlert({ text: 'invalid username or password', type: 'error' })
+        setAlert({ text: 'invalid username or password', type: 'danger' })
       );
     }
   };

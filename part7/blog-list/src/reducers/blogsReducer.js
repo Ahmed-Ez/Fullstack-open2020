@@ -16,6 +16,14 @@ const reducer = (state = [], action) => {
     case 'DELETE_BLOG': {
       return state.filter((blog) => blog.id !== action.data);
     }
+    case 'ADD_COMMENT': {
+      const blog = state.find((blog) => blog.id === action.data.id);
+      const newBlog = {
+        ...blog,
+        comments: blog.comments.concat(action.data.comment),
+      };
+      return state.map((blog) => (blog.id === action.data.id ? newBlog : blog));
+    }
     default:
       return state;
   }
@@ -38,7 +46,7 @@ export const addBlog = (blog) => {
       });
       dispatch(setAlert({ text: 'Blog addes successfully', type: 'success' }));
     } catch (error) {
-      dispatch(setAlert({ text: 'please provide all values', type: 'error' }));
+      dispatch(setAlert({ text: 'please provide all values', type: 'danger' }));
     }
   };
 };
@@ -65,8 +73,21 @@ export const deleteBlog = (id) => {
         setAlert({ text: 'blog deleted successfully', type: 'success' })
       );
     } catch (error) {
-      dispatch(setAlert({ text: 'Blog is already deleted', type: 'error' }));
+      dispatch(setAlert({ text: 'Blog is already deleted', type: 'danger' }));
     }
+  };
+};
+
+export const commentBlog = (id, comment) => {
+  return async (dispatch) => {
+    await blogsServices.addComment(id, comment);
+    dispatch({
+      type: 'ADD_COMMENT',
+      data: {
+        id,
+        comment,
+      },
+    });
   };
 };
 

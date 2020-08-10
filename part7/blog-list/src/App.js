@@ -11,12 +11,14 @@ import { setAlert } from './reducers/alertsReducer';
 import { setUser, logout } from './reducers/usersReducer';
 import './index.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { Route, Switch, Link, useHistory } from 'react-router-dom';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 
 const App = () => {
   const alert = useSelector((state) => state.alert);
   const user = useSelector((state) => state.users.loggedUser);
   const dispatch = useDispatch();
+  const history = useHistory();
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('blog-key');
     if (loggedUser) {
@@ -28,45 +30,65 @@ const App = () => {
 
   const logoutUser = () => {
     dispatch(logout());
-    dispatch(setAlert({ text: 'Logged out ', type: 'success' }));
+    dispatch(setAlert({ text: 'Logged out ', type: 'info' }));
   };
 
   return (
-    <Router>
-      <div>
-        <h1>Blog-List</h1>
-        <div>
-          <Link to="/">Blogs</Link>
-          <Link to="/users">Users</Link>
+    <div className="container">
+      <Navbar bg="light" expand="lg" className="justify-content-between">
+        <Navbar.Brand href="#home">Blog-List</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto ">
+            <Nav.Link href="#" as="span">
+              <Link to="/">Blogs</Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link to="/users">Users</Link>
+            </Nav.Link>
+          </Nav>
           {user ? (
-            <p>
-              {user.username} <button onClick={logoutUser}>logout</button>
-            </p>
+            <Navbar.Text>
+              Signed in as:
+              {'  ' + user.username}
+              <Button variant="link" onClick={logoutUser}>
+                Logout
+              </Button>
+            </Navbar.Text>
           ) : (
             <Link to="/login">Login</Link>
           )}
-        </div>
-        {alert ? <Alert alert={alert} /> : null}
-        <Switch>
-          <Route path="/login">
-            <LoginForm />
-          </Route>
-          <Route path="/users/:id">
-            <User />
-          </Route>
-          <Route path="/users">
-            <Users />
-          </Route>
-          <Route path="/blogs/:id">
-            <Blog />
-          </Route>
-          <Route path="/">
-            {user && <BlogForm />}
-            <Blogs />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+        </Navbar.Collapse>
+      </Navbar>
+
+      {/* NAVBARCODE */}
+      {alert ? <Alert alert={alert} /> : null}
+      <Switch>
+        <Route path="/login">
+          <LoginForm />
+        </Route>
+        <Route path="/create">
+          <BlogForm />
+        </Route>
+        <Route path="/users/:id">
+          <User />
+        </Route>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/blogs/:id">
+          <Blog />
+        </Route>
+        <Route path="/">
+          <Blogs />
+          {user && (
+            <Button variant="info" onClick={() => history.push('/create')}>
+              Add New Blog
+            </Button>
+          )}
+        </Route>
+      </Switch>
+    </div>
   );
 };
 
