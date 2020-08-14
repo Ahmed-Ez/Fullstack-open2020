@@ -1,6 +1,7 @@
 const {
   ApolloServer,
   gql,
+  PubSub,
   UserInputError,
   AuthenticationError,
 } = require('apollo-server');
@@ -21,6 +22,7 @@ mongoose
   .then(() => console.log('mongodb connected'))
   .catch((error) => console.log(error));
 
+const pubSub = new PubSub();
 const typeDefs = gql`
   type Author {
     name: String!
@@ -65,6 +67,9 @@ const typeDefs = gql`
     ): User
     login(username: String!, password: String!): Token
   }
+  type Subscription {
+    bookAdded: Book!
+  }
 `;
 
 const resolvers = {
@@ -101,16 +106,6 @@ const resolvers = {
       return context.currentUser;
     },
   },
-  Author: {
-    bookCount: async (root) => {
-      const books = await Book.find({});
-      let bookCount = 0;
-      books.forEach((book) => {
-        book.author.toString() === root.id ? bookCount++ : null;
-      });
-      return bookCount;
-    },
-  },
   Mutation: {
     addBook: async (root, args, context) => {
       if (!context.currentUser)
@@ -123,13 +118,32 @@ const resolvers = {
         published: args.published,
         genres: args.genres,
       });
+      if (!author.bookCount) author.bookCount = 1;
+      else author.bookCount = author.bookCunt + 1;
       try {
         await newBook.save();
+        await author.save();
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args });
       }
 
-      return newBook;
+      pubSub.publish('BOOK_ADDED', {
+        bookAdded: await newBook
+          .populate('author', {
+            name: 1,
+            born: 1,
+            _id: 0,
+          })
+          .execPopulate(),
+      });
+
+      return await newBook
+        .populate('author', {
+          name: 1,
+          born: 1,
+          _id: 0,
+        })
+        .execPopulate();
     },
     editAuthor: async (root, args, context) => {
       if (!context.currentUser)
@@ -157,6 +171,11 @@ const resolvers = {
       return { value: jwt.sign(token, config.JWT_SECRET) };
     },
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubSub.asyncIterator(['BOOK_ADDED']),
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -172,6 +191,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`);
+  console.log(`Subs ready at ${subscriptionsUrl}`);
 });
